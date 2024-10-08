@@ -1,35 +1,37 @@
-import React from 'react'
-import { useQuery } from 'react-query'
-import axios from 'axios'
+import React from "react";
+import { useQuery } from "react-query";
+import axios from "axios";
+import { baseUrl, paginationQueryString } from "../constants";
 
 interface Site {
-  id: string
-  name: string
-  url: string
-  screenshot_url: string
+  id: string;
+  name: string;
+  url: string;
+  screenshot_url: string;
 }
 
 interface SitesDashboardProps {
-  token: string
+  token: string;
 }
 
 const fetchSites = async (token: string): Promise<Site[]> => {
-  const response = await axios.get('https://api.netlify.com/api/v1/sites', {
+  const response = await axios.get(baseUrl + paginationQueryString, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  })
-  return response.data
-}
+  });
+  return response.data;
+};
 
 const SitesDashboard: React.FC<SitesDashboardProps> = ({ token }) => {
-  const { data: sites, isLoading, error } = useQuery<Site[], Error>(
-    ['sites', token],
-    () => fetchSites(token)
-  )
+  const {
+    data: sites,
+    isLoading,
+    error,
+  } = useQuery<Site[], Error>(["sites", token], () => fetchSites(token));
 
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div>Error: {error.message}</div>
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
   return (
     <div className="sites-dashboard">
@@ -43,7 +45,7 @@ const SitesDashboard: React.FC<SitesDashboardProps> = ({ token }) => {
         </div>
       ))}
     </div>
-  )
-}
+  );
+};
 
-export default SitesDashboard
+export default SitesDashboard;
